@@ -34,7 +34,7 @@ function App() {
             <span>GitHub</span>
           </a>
           
-          <a href="https://fahmi.dev" target="_blank" rel="noopener noreferrer" className="link-card">
+          <a href="#" className="link-card">
             <i className="ph ph-briefcase"></i>
             <span>Portofolio</span>
           </a>
