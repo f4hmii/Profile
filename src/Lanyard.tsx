@@ -243,6 +243,7 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
       
       <mesh ref={bandLeft}>
         <meshLineGeometry />
+        {/* @ts-expect-error: args is not required at runtime */}
         <meshLineMaterial
           color="white"
           map={lanyardTexture}
@@ -254,6 +255,7 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
       </mesh>
       <mesh ref={bandRight}>
         <meshLineGeometry />
+        {/* @ts-expect-error: args is not required at runtime */}
         <meshLineMaterial
           color="white"
           map={lanyardTexture}
