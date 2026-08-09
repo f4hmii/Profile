@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Lanyard from './Lanyard'
+import { ErrorBoundary } from './ErrorBoundary'
 import './index.css'
 
 function App() {
@@ -16,7 +17,9 @@ function App() {
       <div className="background-animation"></div>
       
       <div className="canvas-container">
-        <Lanyard />
+        <ErrorBoundary>
+          <Lanyard />
+        </ErrorBoundary>
       </div>
 
       <div className="ui-layer">
