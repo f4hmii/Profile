@@ -233,8 +233,8 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
             </Text>
             
             {/* Simple Clip at top */}
-            <mesh position={[0, 1.9, 0]}>
-              <cylinderGeometry args={[0.1, 0.1, 0.4]} rotation={[0, 0, Math.PI / 2]} />
+            <mesh position={[0, 1.9, 0]} rotation={[0, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[0.1, 0.1, 0.4]} />
               <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
             </mesh>
           </group>
