@@ -29,6 +29,7 @@ const createTextTexture = () => {
   canvas.height = 128;
   const context = canvas.getContext('2d');
   if (context) {
+    context.direction = 'ltr';
     context.fillStyle = '#0f172a';
     context.fillRect(0, 0, 1024, 128);
     context.fillStyle = '#10b981'; // sedikit hijau khas console/code
@@ -40,7 +41,10 @@ const createTextTexture = () => {
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
+  texture.rotation = 0;
   texture.repeat.set(4, 1);
+  texture.offset.set(0, 0);
+  texture.needsUpdate = true;
   return texture;
 };
 
@@ -104,7 +108,13 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
     return body.lerped;
   };
 
-  const texture = useTexture('/pasfotomerah_transparent.png'); 
+  const texture = useTexture('/fotokartun2.png');
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  texture.anisotropy = 8;
+  texture.needsUpdate = true;
   
   const [curveLeft] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
   const [curveRight] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
@@ -114,7 +124,7 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 0.6]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 0.6]);
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 0.6]);
-  useSphericalJoint(j3, card, [[0, 0, 0], [0, 2.0, 0]]);
+  useSphericalJoint(j3, card, [[0, 0, 0], [0, 1.7, 0]]);
 
   useEffect(() => {
     if (hovered) {
@@ -191,7 +201,7 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
           {...segmentProps}
           type={dragged ? 'kinematicPosition' : 'dynamic'}
         >
-          <CuboidCollider args={[1.5, 1.8, 0.05]} mass={1} />
+          <CuboidCollider args={[1.3, 1.6, 0.05]} mass={1} />
           
           <group
             onPointerOver={() => hover(true)}
@@ -208,7 +218,7 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
             }}
           >
             {/* Custom 3D Card Geometry */}
-            <RoundedBox args={[3, 3.6, 0.1]} radius={0.1} smoothness={4}>
+            <RoundedBox args={[2.6, 3.2, 0.1]} radius={0.1} smoothness={4}>
               <meshPhysicalMaterial 
                 color="rgba(15, 23, 42, 0.8)" 
                 transmission={0.5} 
@@ -220,20 +230,25 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
             
             {/* Profile Image mapped to a plane on the card front */}
             <mesh position={[0, 0.5, 0.06]}>
-              <circleGeometry args={[1.0, 64]} />
-              <meshBasicMaterial map={texture} transparent />
+              <planeGeometry args={[1.5, 1.5]} />
+              <meshBasicMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
             </mesh>
 
             {/* Name Text */}
-            <Text position={[0, -0.8, 0.06]} fontSize={0.35} color="white" fontWeight="bold" anchorX="center" anchorY="middle">
+            <Text position={[0, -0.7, 0.06]} fontSize={0.3} color="white" fontWeight="bold" anchorX="center" anchorY="middle">
               Zulfahmi
             </Text>
-            <Text position={[0, -1.2, 0.06]} fontSize={0.15} color="#94a3b8" anchorX="center" anchorY="middle">
+            <Text position={[0, -1.05, 0.06]} fontSize={0.13} color="#94a3b8" anchorX="center" anchorY="middle">
               Software Developer | Tech Enthusiast
+            </Text>
+
+            {/* Developer logo */}
+            <Text position={[-0.92, 1.25, 0.06]} fontSize={0.2} color="#10b981" fontWeight="bold" anchorX="center" anchorY="middle">
+              &lt;/&gt;
             </Text>
             
             {/* Simple Clip at top */}
-            <mesh position={[0, 1.9, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <mesh position={[0, 1.7, 0]} rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[0.1, 0.1, 0.4]} />
               <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
             </mesh>
@@ -241,26 +256,26 @@ function Band({ isMobile = false }: { isMobile?: boolean }) {
         </RigidBody>
       </group>
       
-      <mesh ref={bandLeft}>
+      <mesh ref={bandLeft} position={[0, 0, -0.15]} renderOrder={-1}>
         <meshLineGeometry />
         {/* @ts-expect-error: args is not required at runtime */}
         <meshLineMaterial
           color="white"
           map={lanyardTexture}
           useMap={1}
-          depthTest={false}
+          depthTest={true}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
           lineWidth={1}
         />
       </mesh>
-      <mesh ref={bandRight}>
+      <mesh ref={bandRight} position={[0, 0, -0.15]} renderOrder={-1}>
         <meshLineGeometry />
         {/* @ts-expect-error: args is not required at runtime */}
         <meshLineMaterial
           color="white"
           map={lanyardTexture}
           useMap={1}
-          depthTest={false}
+          depthTest={true}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
           lineWidth={1}
         />
